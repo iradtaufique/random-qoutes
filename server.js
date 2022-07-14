@@ -8,6 +8,21 @@ const PORT = process.env.PORT || 4001;
 
 app.use(express.static('public'));
 
+
+
+const createNewQuote = (queryArguments) => {
+    if (queryArguments.hasOwnProperty('quote') &&
+        queryArguments.hasOwnProperty('person')) {
+      return {
+        'quote': queryArguments.quote,
+        'person':  queryArguments.person,
+      };
+    } else {
+      return false;
+    }
+  };
+
+
 // route for getting rondom quote
 app.get('/api/quotes/random', (req, res, next)=>{
     let randomQuote = getRandomElement(quotes); // get romdom quotes
@@ -31,6 +46,21 @@ app.get('/api/quotes', (req, res, next) => {
             quotes: quotes
           });
     }
+});
+
+
+// creating new post
+app.post('/api/quotes', (req, res, next)=>{
+    const newquote = createNewQuote(req.query);
+    if (newquote){
+        quotes.push(newquote);
+        const quotesObject = Object.create(null);
+        quotesObject.quote = newquote;
+        res.status(201).send(quotesObject);
+    }else{
+        res.status(400).send();
+    }
+
 });
   
   app.listen(PORT, ()=>{

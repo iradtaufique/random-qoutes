@@ -18,9 +18,20 @@ app.get('/api/quotes/random', (req, res, next)=>{
 
 
 //   route for getting all routes
-app.get('api/quotes', (req, res, next)=>{
-    const personId = req.query.person; // quotes user id
-})
+app.get('/api/quotes', (req, res, next) => {
+    const personqtId = req.query.person;
+    let allQuotesArray = [];
+    if (personqtId) {
+        allQuotesArray = quotes.filter(quote => quote.person === personqtId);
+        const quotesObject = Object.create(null);
+        quotesObject.quotes = allQuotesArray;
+        res.send(quotesObject);
+    } else {
+        res.send({
+            quotes: quotes
+          });
+    }
+});
   
   app.listen(PORT, ()=>{
     console.log(`Listening on Port ${PORT}`)
